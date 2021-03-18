@@ -12,6 +12,7 @@ def send_telegram(telegram_channel_id, text: str):
         'text': text
     })
     if r.status_code != 200:
+        print('telegram error:', r)
         raise Exception('post_text error')
 
 
@@ -67,13 +68,14 @@ def checker_loop(subs):
     while True:
         for sub in subs:
             sub.check_tickets()
-            time.sleep(10)
+        time.sleep(60)
 
 
 def init_subscriber(subs_ar):
+    subs_array = []
     for sub in subs_ar:
-        return Person(sub)
+        subs_array.append(Person(sub))
+    return subs_array
 
 
-subs_array = [init_subscriber(config.telegram_subscribers)]
-checker_loop(subs_array)
+checker_loop(init_subscriber(config.telegram_subscribers))
